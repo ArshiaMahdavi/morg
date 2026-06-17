@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ورود ادمین | صنایع مرغداری پاکروح</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+
+<body class="admin-login-page">
+  <main class="login-shell">
+    <section class="login-panel" aria-labelledby="loginTitle">
+      <div class="login-brand">
+        <span><i class="fa-solid fa-feather-pointed"></i></span>
+        <div>
+          <strong>صنایع مرغداری پاکروح</strong>
+          <small>پنل مدیریت محصولات</small>
+        </div>
+      </div>
+
+      <h1 id="loginTitle">ورود مدیر</h1>
+      <p>برای مدیریت کاتالوگ محصولات وارد حساب ادمین شوید.</p>
+
+      <form class="login-form" id="loginForm" novalidate>
+        <label>
+          <span>نام کاربری</span>
+          <input type="text" name="username" autocomplete="username" required />
+        </label>
+
+        <label>
+          <span>رمز عبور</span>
+          <input type="password" name="password" autocomplete="current-password" required />
+        </label>
+
+        <div class="admin-alert" id="loginMessage" aria-live="polite"></div>
+
+        <button class="admin-btn admin-btn--primary" type="submit">
+          ورود به پنل
+          <i class="fa-solid fa-arrow-left-long"></i>
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>داشبورد محصولات | صنایع مرغداری پاکروح</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <a class="admin-brand" href="/admin/dashboard.html">
+        <span><i class="fa-solid fa-feather-pointed"></i></span>
+        <div>
+          <strong>پاکروح</strong>
+          <small>مدیریت محصولات</small>
+        </div>
+      </a>
+
+      <nav class="admin-nav" aria-label="ناوبری پنل">
+        <a class="is-active" href="/admin/dashboard.html">
+          <i class="fa-solid fa-box-open"></i>
+          محصولات
+        </a>
+        <a href="/products.html" target="_blank" rel="noopener">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
+          نمایش سایت
+        </a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <div>
+          <span class="admin-eyebrow">پنل مدیریت</span>
+          <h1>کاتالوگ محصولات</h1>
+        </div>
+
+        <div class="admin-topbar__actions">
+          <span id="adminUser">admin</span>
+          <button class="admin-btn admin-btn--ghost" id="logoutButton" type="button">
+            خروج
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </header>
+
+      <section class="admin-summary" aria-label="خلاصه محصولات">
+        <div>
+          <small>تعداد کل</small>
+          <strong id="totalProducts">۰</strong>
+        </div>
+        <div>
+          <small>محصول ویژه</small>
+          <strong id="featuredProducts">۰</strong>
+        </div>
+        <div>
+          <small>آخرین بروزرسانی</small>
+          <strong id="lastUpdated">-</strong>
+        </div>
+      </section>
+
+      <section class="admin-grid">
+        <form class="product-form" id="productForm" novalidate>
+          <div class="form-head">
+            <div>
+              <span class="admin-eyebrow">فرم محصول</span>
+              <h2 id="formTitle">افزودن محصول جدید</h2>
+            </div>
+            <button class="admin-btn admin-btn--ghost" id="resetFormButton" type="button">
+              فرم جدید
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+
+          <input type="hidden" name="id" id="productId" />
+          <input type="hidden" name="currentImage" id="currentImage" />
+
+          <div class="field-row">
+            <label>
+              <span>عنوان محصول</span>
+              <input type="text" name="title" id="title" required />
+            </label>
+
+            <label>
+              <span>اسلاگ</span>
+              <input type="text" name="slug" id="slug" placeholder="مثلاً dankhori-boshghabi" />
+            </label>
+          </div>
+
+          <div class="field-row">
+            <label>
+              <span>دسته‌بندی</span>
+              <select name="category" id="category" required>
+                <option value="">انتخاب کنید</option>
+                <option value="waterer">آبخوری</option>
+                <option value="feeder">دانخوری</option>
+                <option value="transfer">انتقال دان</option>
+                <option value="heating">گرمایشی</option>
+                <option value="basket">سبد و شانه</option>
+              </select>
+            </label>
+
+            <label>
+              <span>وضعیت / برچسب</span>
+              <input type="text" name="statusBadge" id="statusBadge" value="فعال" required />
+            </label>
+          </div>
+
+          <label>
+            <span>توضیح کوتاه</span>
+            <textarea name="shortDescription" id="shortDescription" rows="2" required></textarea>
+          </label>
+
+          <label>
+            <span>توضیح کامل</span>
+            <textarea name="description" id="description" rows="5" required></textarea>
+          </label>
+
+          <div class="field-row">
+            <label>
+              <span>قیمت</span>
+              <input type="text" name="priceText" id="priceText" value="استعلام قیمت" required />
+            </label>
+
+            <label class="checkbox-field">
+              <input type="checkbox" name="isFeatured" id="isFeatured" />
+              <span>نمایش به عنوان محصول ویژه</span>
+            </label>
+          </div>
+
+          <section class="features-editor" aria-labelledby="featuresTitle">
+            <div class="features-editor__head">
+              <span id="featuresTitle">ویژگی‌های کوتاه محصول</span>
+              <p>
+                ویژگی‌ها موارد کوتاهی هستند که زیر محصول نمایش داده می‌شوند؛ مثل کیفیت بالا، ارسال به سراسر کشور،
+                مصرف بهینه.
+              </p>
+            </div>
+
+            <input type="hidden" name="features" id="features" />
+
+            <div class="features-editor__inputs">
+              <label>
+                <span>ویژگی اول</span>
+                <input type="text" id="featureOne" name="featureOne" placeholder="مثلاً پخش یکنواخت دان" />
+              </label>
+
+              <label>
+                <span>ویژگی دوم</span>
+                <input type="text" id="featureTwo" name="featureTwo" placeholder="مثلاً کاهش هدررفت خوراک" />
+              </label>
+
+              <label>
+                <span>ویژگی سوم</span>
+                <input type="text" id="featureThree" name="featureThree" placeholder="مثلاً مناسب سالن‌های صنعتی" />
+              </label>
+            </div>
+
+            <div class="features-example" aria-label="نمونه ویژگی‌ها">
+              <strong>نمونه:</strong>
+              <span>ویژگی اول: پخش یکنواخت دان</span>
+              <span>ویژگی دوم: کاهش هدررفت خوراک</span>
+              <span>ویژگی سوم: مناسب سالن‌های صنعتی</span>
+            </div>
+          </section>
+
+          <div class="upload-box">
+            <label>
+              <span>عکس محصول</span>
+              <input type="file" name="image" id="image" accept="image/*" />
+            </label>
+            <div class="image-preview" id="imagePreview">
+              <i class="fa-regular fa-image"></i>
+              <span>پیش‌نمایش عکس</span>
+            </div>
+          </div>
+
+          <div class="admin-alert" id="formMessage" aria-live="polite"></div>
+
+          <button class="admin-btn admin-btn--primary" type="submit" id="saveButton">
+            ذخیره محصول
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+        </form>
+
+        <section class="products-panel">
+          <div class="panel-head">
+            <div>
+              <span class="admin-eyebrow">لیست محصولات</span>
+              <h2>محصولات ثبت‌شده</h2>
+            </div>
+            <button class="admin-btn admin-btn--ghost" id="refreshProducts" type="button">
+              تازه‌سازی
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>محصول</th>
+                  <th>دسته</th>
+                  <th>قیمت</th>
+                  <th>وضعیت</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="productsTable">
+                <tr>
+                  <td colspan="5">در حال دریافت محصولات...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+
+</html>

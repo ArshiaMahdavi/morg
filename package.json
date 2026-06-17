@@ -1,0 +1,25 @@
+{
+  "name": "morgh-catalog-admin",
+  "version": "1.0.0",
+  "description": "Company website and manageable product catalog for poultry equipment.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "NODE_NO_WARNINGS=1 nodemon server.js",
+    "start": "NODE_NO_WARNINGS=1 node server.js",
+    "seed": "NODE_NO_WARNINGS=1 node db/seed.js"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "bcryptjs": "latest",
+    "cookie-parser": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "jsonwebtoken": "latest",
+    "multer": "latest"
+  },
+  "devDependencies": {
+    "nodemon": "latest"
+  }
+}
