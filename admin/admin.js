@@ -10,11 +10,24 @@ const categoryLabels = {
 
 let adminProducts = [];
 let editingProductId = null;
+let currentPage = 1;
+const pageSize = 6;
+const uploadLimit = 3 * 1024 * 1024;
+const allowedImageTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+let previewObjectUrl = "";
 
 function imageUrl(image) {
-  if (!image) return "";
+  if (!image) return "/image/06F3B098-D47A-4B50-91FF-455BA45AA354.png";
   if (image.startsWith("http") || image.startsWith("/")) return image;
   return `/${image}`;
+}
+
+function slugifyAdmin(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}]+/gu, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 function showMessage(element, message, isError = false) {
@@ -100,6 +113,18 @@ function updatePreview(src) {
   preview.innerHTML = `<img src="${escapeHtml(src)}" alt="پیش‌نمایش عکس محصول" />`;
 }
 
+function clearPreviewObjectUrl() {
+  if (!previewObjectUrl) return;
+  URL.revokeObjectURL(previewObjectUrl);
+  previewObjectUrl = "";
+}
+
+function refreshCounters() {
+  ["shortDescription", "description"].forEach((id) => {
+    document.querySelector(`#${id}`)?.dispatchEvent(new Event("input"));
+  });
+}
+
 function getFeatureInputs() {
   return [
     document.querySelector("#featureOne"),
@@ -141,7 +166,9 @@ function resetProductForm() {
   formTitle.textContent = "افزودن محصول جدید";
   saveButton.innerHTML = 'ذخیره محصول <i class="fa-solid fa-floppy-disk"></i>';
   clearMessage(message);
+  clearPreviewObjectUrl();
   updatePreview("");
+  refreshCounters();
 }
 
 function fillProductForm(product) {
@@ -168,8 +195,35 @@ function fillProductForm(product) {
   document.querySelector("#isFeatured").checked = Boolean(product.isFeatured);
   document.querySelector("#formTitle").textContent = "ویرایش محصول";
   document.querySelector("#saveButton").innerHTML = 'ذخیره تغییرات <i class="fa-solid fa-floppy-disk"></i>';
+  clearPreviewObjectUrl();
   updatePreview(imageUrl(product.image));
+  refreshCounters();
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function getFilteredAdminProducts() {
+  const search = String(document.querySelector("#adminProductSearch")?.value || "").trim().toLowerCase();
+  const category = document.querySelector("#adminCategoryFilter")?.value || "all";
+  const sortValue = document.querySelector("#adminSortProducts")?.value || "newest";
+  const collator = new Intl.Collator("fa");
+
+  const filtered = adminProducts.filter((product) => {
+    const categoryMatch = category === "all" || product.category === category;
+    const searchText = `${product.title || ""} ${product.slug || ""} ${product.shortDescription || ""} ${product.description || ""}`.toLowerCase();
+    return categoryMatch && searchText.includes(search);
+  });
+
+  return filtered.sort((a, b) => {
+    if (sortValue === "title") return collator.compare(a.title || "", b.title || "");
+    if (sortValue === "category") {
+      return collator.compare(categoryLabels[a.category] || a.category || "", categoryLabels[b.category] || b.category || "");
+    }
+    if (sortValue === "featured") {
+      return Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured)) || Number(b.id || 0) - Number(a.id || 0);
+    }
+
+    return Number(b.id || 0) - Number(a.id || 0);
+  });
 }
 
 function renderProducts() {
@@ -177,11 +231,14 @@ function renderProducts() {
   const totalProducts = document.querySelector("#totalProducts");
   const featuredProducts = document.querySelector("#featuredProducts");
   const lastUpdated = document.querySelector("#lastUpdated");
+  const paginationInfo = document.querySelector("#paginationInfo");
+  const prevPage = document.querySelector("#prevPage");
+  const nextPage = document.querySelector("#nextPage");
 
   if (!table) return;
 
-  totalProducts.textContent = persianNumber.format(adminProducts.length);
-  featuredProducts.textContent = persianNumber.format(
+  if (totalProducts) totalProducts.textContent = persianNumber.format(adminProducts.length);
+  if (featuredProducts) featuredProducts.textContent = persianNumber.format(
     adminProducts.filter((product) => product.isFeatured).length
   );
 
@@ -190,23 +247,36 @@ function renderProducts() {
     .filter(Boolean)
     .sort()
     .at(-1);
-  lastUpdated.textContent = latest ? new Date(`${latest}Z`).toLocaleDateString("fa-IR") : "-";
+  if (lastUpdated) lastUpdated.textContent = latest ? new Date(`${latest}Z`).toLocaleDateString("fa-IR") : "-";
 
-  if (!adminProducts.length) {
-    table.innerHTML = '<tr><td colspan="5">هنوز محصولی ثبت نشده است.</td></tr>';
+  const filteredProducts = getFilteredAdminProducts();
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+  currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+  const start = (currentPage - 1) * pageSize;
+  const visibleProducts = filteredProducts.slice(start, start + pageSize);
+
+  if (paginationInfo) {
+    paginationInfo.textContent = `صفحه ${persianNumber.format(currentPage)} از ${persianNumber.format(totalPages)} | ${persianNumber.format(filteredProducts.length)} نتیجه`;
+  }
+
+  if (prevPage) prevPage.disabled = currentPage <= 1;
+  if (nextPage) nextPage.disabled = currentPage >= totalPages;
+
+  if (!visibleProducts.length) {
+    table.innerHTML = `<tr><td colspan="5">${adminProducts.length ? "محصولی با این فیلتر پیدا نشد." : "هنوز محصولی ثبت نشده است."}</td></tr>`;
     return;
   }
 
-  table.innerHTML = adminProducts
+  table.innerHTML = visibleProducts
     .map(
       (product) => `
         <tr>
           <td>
             <div class="product-cell">
-              <img src="${escapeHtml(imageUrl(product.image))}" alt="${escapeHtml(product.title)}" />
+              <img src="${escapeHtml(imageUrl(product.image))}" alt="${escapeHtml(product.title)}" loading="lazy" />
               <div>
                 <strong>${escapeHtml(product.title)}</strong>
-                <small>${escapeHtml(product.shortDescription)}</small>
+                <small>${escapeHtml(product.slug || product.shortDescription)}</small>
               </div>
             </div>
           </td>
@@ -259,12 +329,116 @@ function validateProductForm(form) {
   return "";
 }
 
+function validateImageFile(file) {
+  if (!file || file.size === 0) return "";
+
+  if (!allowedImageTypes.includes(file.type)) {
+    return "فرمت تصویر باید JPG، PNG، WEBP یا GIF باشد.";
+  }
+
+  if (file.size > uploadLimit) {
+    return "حجم تصویر نباید بیشتر از ۳ مگابایت باشد.";
+  }
+
+  return "";
+}
+
+function previewSelectedFile(file) {
+  clearPreviewObjectUrl();
+
+  if (!file) {
+    updatePreview(imageUrl(document.querySelector("#currentImage")?.value || ""));
+    return;
+  }
+
+  previewObjectUrl = URL.createObjectURL(file);
+  updatePreview(previewObjectUrl);
+}
+
+function initCharacterCounters() {
+  document.querySelectorAll("[data-counter-for]").forEach((counter) => {
+    const input = document.querySelector(`#${counter.dataset.counterFor}`);
+    if (!input) return;
+
+    const updateCounter = () => {
+      const max = Number(input.getAttribute("maxlength") || 0);
+      counter.textContent = `${persianNumber.format(input.value.length)} / ${persianNumber.format(max)}`;
+    };
+
+    input.addEventListener("input", updateCounter);
+    updateCounter();
+  });
+}
+
+function initSlugAssist() {
+  const title = document.querySelector("#title");
+  const slug = document.querySelector("#slug");
+
+  if (!title || !slug) return;
+
+  title.addEventListener("blur", () => {
+    if (slug.value.trim()) return;
+    slug.value = slugifyAdmin(title.value);
+  });
+}
+
+function initUploadDropZone(imageInput, message) {
+  const uploadBox = document.querySelector("#uploadBox");
+  const dropZone = document.querySelector(".drop-zone");
+
+  if (!uploadBox || !dropZone || !imageInput) return;
+
+  const applyFile = (file) => {
+    const validationError = validateImageFile(file);
+
+    if (validationError) {
+      imageInput.value = "";
+      showMessage(message, validationError, true);
+      return;
+    }
+
+    clearMessage(message);
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    imageInput.files = transfer.files;
+    previewSelectedFile(file);
+  };
+
+  ["dragenter", "dragover"].forEach((eventName) => {
+    dropZone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      uploadBox.classList.add("is-dragging");
+    });
+  });
+
+  ["dragleave", "drop"].forEach((eventName) => {
+    dropZone.addEventListener(eventName, (event) => {
+      event.preventDefault();
+      uploadBox.classList.remove("is-dragging");
+    });
+  });
+
+  dropZone.addEventListener("drop", (event) => {
+    const file = event.dataTransfer?.files?.[0];
+    if (file) applyFile(file);
+  });
+}
+
 function initDashboard() {
   const form = document.querySelector("#productForm");
   if (!form) return;
 
   const message = document.querySelector("#formMessage");
   const imageInput = document.querySelector("#image");
+  const filterControls = [
+    document.querySelector("#adminProductSearch"),
+    document.querySelector("#adminCategoryFilter"),
+    document.querySelector("#adminSortProducts"),
+  ].filter(Boolean);
+
+  initCharacterCounters();
+  initSlugAssist();
+  initUploadDropZone(imageInput, message);
 
   requestJson("/api/admin/me")
     .then((data) => {
@@ -284,6 +458,27 @@ function initDashboard() {
 
   document.querySelector("#resetFormButton").addEventListener("click", resetProductForm);
 
+  filterControls.forEach((control) => {
+    control.addEventListener("input", () => {
+      currentPage = 1;
+      renderProducts();
+    });
+    control.addEventListener("change", () => {
+      currentPage = 1;
+      renderProducts();
+    });
+  });
+
+  document.querySelector("#prevPage")?.addEventListener("click", () => {
+    currentPage -= 1;
+    renderProducts();
+  });
+
+  document.querySelector("#nextPage")?.addEventListener("click", () => {
+    currentPage += 1;
+    renderProducts();
+  });
+
   document.querySelector("#logoutButton").addEventListener("click", async () => {
     await requestJson("/api/admin/logout", { method: "POST" }).catch(() => {});
     window.location.href = "/admin/login.html";
@@ -292,11 +487,21 @@ function initDashboard() {
   imageInput.addEventListener("change", () => {
     const file = imageInput.files?.[0];
     if (!file) {
+      clearPreviewObjectUrl();
       updatePreview(imageUrl(document.querySelector("#currentImage").value));
       return;
     }
 
-    updatePreview(URL.createObjectURL(file));
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      imageInput.value = "";
+      showMessage(message, validationError, true);
+      updatePreview(imageUrl(document.querySelector("#currentImage").value));
+      return;
+    }
+
+    clearMessage(message);
+    previewSelectedFile(file);
   });
 
   document.querySelector("#productsTable").addEventListener("click", async (event) => {
@@ -347,6 +552,12 @@ function initDashboard() {
     const imageFile = formData.get("image");
     if (imageFile && imageFile.size === 0) {
       formData.delete("image");
+    } else {
+      const imageValidationError = validateImageFile(imageFile);
+      if (imageValidationError) {
+        showMessage(message, imageValidationError, true);
+        return;
+      }
     }
 
     try {

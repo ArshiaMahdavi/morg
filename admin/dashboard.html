@@ -83,58 +83,74 @@
           <input type="hidden" name="id" id="productId" />
           <input type="hidden" name="currentImage" id="currentImage" />
 
-          <div class="field-row">
-            <label>
-              <span>عنوان محصول</span>
-              <input type="text" name="title" id="title" required />
-            </label>
+          <section class="form-section">
+            <div class="form-section__title">
+              <i class="fa-solid fa-pen-nib"></i>
+              <span>اطلاعات اصلی</span>
+            </div>
+
+            <div class="field-row">
+              <label>
+                <span>عنوان محصول</span>
+                <input type="text" name="title" id="title" required maxlength="80" />
+              </label>
+
+              <label>
+                <span>اسلاگ</span>
+                <input type="text" name="slug" id="slug" placeholder="مثلاً dankhori-boshghabi" maxlength="90" />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                <span>دسته‌بندی</span>
+                <select name="category" id="category" required>
+                  <option value="">انتخاب کنید</option>
+                  <option value="waterer">آبخوری</option>
+                  <option value="feeder">دانخوری</option>
+                  <option value="transfer">انتقال دان</option>
+                  <option value="heating">گرمایشی</option>
+                  <option value="basket">سبد و شانه</option>
+                </select>
+              </label>
+
+              <label>
+                <span>وضعیت / برچسب</span>
+                <input type="text" name="statusBadge" id="statusBadge" value="فعال" required maxlength="28" />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                <span>قیمت</span>
+                <input type="text" name="priceText" id="priceText" value="استعلام قیمت" required maxlength="48" />
+              </label>
+
+              <label class="checkbox-field">
+                <input type="checkbox" name="isFeatured" id="isFeatured" />
+                <span>نمایش به عنوان محصول ویژه</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="form-section__title">
+              <i class="fa-solid fa-align-right"></i>
+              <span>توضیحات محصول</span>
+            </div>
 
             <label>
-              <span>اسلاگ</span>
-              <input type="text" name="slug" id="slug" placeholder="مثلاً dankhori-boshghabi" />
-            </label>
-          </div>
-
-          <div class="field-row">
-            <label>
-              <span>دسته‌بندی</span>
-              <select name="category" id="category" required>
-                <option value="">انتخاب کنید</option>
-                <option value="waterer">آبخوری</option>
-                <option value="feeder">دانخوری</option>
-                <option value="transfer">انتقال دان</option>
-                <option value="heating">گرمایشی</option>
-                <option value="basket">سبد و شانه</option>
-              </select>
+              <span>توضیح کوتاه</span>
+              <textarea name="shortDescription" id="shortDescription" rows="2" required maxlength="180"></textarea>
+              <small class="field-counter" data-counter-for="shortDescription">۰ / ۱۸۰</small>
             </label>
 
             <label>
-              <span>وضعیت / برچسب</span>
-              <input type="text" name="statusBadge" id="statusBadge" value="فعال" required />
+              <span>توضیح کامل</span>
+              <textarea name="description" id="description" rows="5" required maxlength="900"></textarea>
+              <small class="field-counter" data-counter-for="description">۰ / ۹۰۰</small>
             </label>
-          </div>
-
-          <label>
-            <span>توضیح کوتاه</span>
-            <textarea name="shortDescription" id="shortDescription" rows="2" required></textarea>
-          </label>
-
-          <label>
-            <span>توضیح کامل</span>
-            <textarea name="description" id="description" rows="5" required></textarea>
-          </label>
-
-          <div class="field-row">
-            <label>
-              <span>قیمت</span>
-              <input type="text" name="priceText" id="priceText" value="استعلام قیمت" required />
-            </label>
-
-            <label class="checkbox-field">
-              <input type="checkbox" name="isFeatured" id="isFeatured" />
-              <span>نمایش به عنوان محصول ویژه</span>
-            </label>
-          </div>
+          </section>
 
           <section class="features-editor" aria-labelledby="featuresTitle">
             <div class="features-editor__head">
@@ -172,10 +188,12 @@
             </div>
           </section>
 
-          <div class="upload-box">
-            <label>
+          <div class="upload-box" id="uploadBox">
+            <label class="drop-zone" for="image">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
               <span>عکس محصول</span>
-              <input type="file" name="image" id="image" accept="image/*" />
+              <small>فایل JPG، PNG، WEBP یا GIF را انتخاب یا روی این بخش رها کنید.</small>
+              <input type="file" name="image" id="image" accept="image/jpeg,image/png,image/webp,image/gif" />
             </label>
             <div class="image-preview" id="imagePreview">
               <i class="fa-regular fa-image"></i>
@@ -203,6 +221,27 @@
             </button>
           </div>
 
+          <div class="table-tools" aria-label="فیلتر محصولات پنل">
+            <label class="table-search" for="adminProductSearch">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="search" id="adminProductSearch" placeholder="جستجوی عنوان، توضیح یا اسلاگ..." />
+            </label>
+            <select id="adminCategoryFilter" aria-label="فیلتر دسته‌بندی">
+              <option value="all">همه دسته‌ها</option>
+              <option value="waterer">آبخوری</option>
+              <option value="feeder">دانخوری</option>
+              <option value="transfer">انتقال دان</option>
+              <option value="heating">گرمایشی</option>
+              <option value="basket">سبد و شانه</option>
+            </select>
+            <select id="adminSortProducts" aria-label="مرتب‌سازی محصولات">
+              <option value="newest">جدیدترین</option>
+              <option value="title">نام محصول</option>
+              <option value="category">دسته‌بندی</option>
+              <option value="featured">ویژه‌ها</option>
+            </select>
+          </div>
+
           <div class="admin-table-wrap">
             <table class="admin-table">
               <thead>
@@ -220,6 +259,18 @@
                 </tr>
               </tbody>
             </table>
+          </div>
+
+          <div class="table-pagination" aria-label="صفحه‌بندی محصولات">
+            <button class="admin-btn admin-btn--ghost" type="button" id="prevPage">
+              <i class="fa-solid fa-arrow-right"></i>
+              قبلی
+            </button>
+            <span id="paginationInfo">صفحه ۱ از ۱</span>
+            <button class="admin-btn admin-btn--ghost" type="button" id="nextPage">
+              بعدی
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
           </div>
         </section>
       </section>

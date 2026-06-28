@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="تماس با صنایع مرغداری تات پاکروح برای مشاوره خرید، استعلام قیمت و سفارش تجهیزات مرغداری." />
+  <title>تماس با ما | صنایع مرغداری تات پاکروح</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="page-shell">
+    <header class="site-header" id="siteHeader">
+      <div class="container header__inner">
+        <a class="brand" href="index.html">
+          <span class="brand__mark" aria-hidden="true">
+            <i class="fa-solid fa-feather-pointed"></i>
+          </span>
+          <span class="brand__text">
+            <strong>صنایع مرغداری تات پاکروح</strong>
+            <small>۲۰ سال سابقه در تولید تجهیزات مرغداری</small>
+          </span>
+        </a>
+
+        <nav class="main-nav" aria-label="ناوبری اصلی">
+          <a class="main-nav__link" href="index.html">خانه</a>
+          <a class="main-nav__link" href="products.html">محصولات</a>
+          <a class="main-nav__link" href="services.html">خدمات</a>
+          <a class="main-nav__link" href="about.html">درباره ما</a>
+          <a class="main-nav__link is-active" href="contact.html">تماس با ما</a>
+        </nav>
+
+        <div class="header-actions">
+          <a class="btn btn--primary header-actions__cta" href="tel:09125152625">
+            <span>تماس مستقیم</span>
+            <i class="fa-solid fa-phone"></i>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="contact-hero" aria-labelledby="contactTitle">
+        <div class="container">
+          <div class="contact-hero__content">
+            <span><i class="fa-solid fa-message"></i> ارتباط مستقیم</span>
+            <h1 id="contactTitle">برای مشاوره و استعلام قیمت در ارتباط باشید</h1>
+            <p>اطلاعات سالن، محصول مورد نیاز یا ظرفیت پرورش را ارسال کنید تا مسیر انتخاب و خرید سریع‌تر پیش برود.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-page" aria-labelledby="contactFormTitle">
+        <div class="container contact-layout">
+          <div class="contact-cards">
+            <a href="tel:01142090494">
+              <i class="fa-solid fa-phone"></i>
+              <span>تلفن ثابت</span>
+              <strong>۰۱۱۴۲۰۹۰۴۹۴</strong>
+            </a>
+            <a href="tel:09125152625">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+              <span>موبایل فروش</span>
+              <strong>۰۹۱۲۵۱۵۲۶۲۵</strong>
+            </a>
+            <article>
+              <i class="fa-regular fa-clock"></i>
+              <span>ساعات پاسخگویی</span>
+              <strong>شنبه تا پنجشنبه، ۹ تا ۱۸</strong>
+            </article>
+            <article>
+              <i class="fa-solid fa-location-dot"></i>
+              <span>نشانی</span>
+              <strong>قائمشهر، کمربندی شمالی، روبروی پمپ بنزین مهمانسرا، بهارنارنج ۴۵</strong>
+            </article>
+          </div>
+
+          <form class="contact-form" id="contactRequestForm" novalidate>
+            <div class="contact-form__head">
+              <span>درخواست مشاوره</span>
+              <h2 id="contactFormTitle">جزئیات نیاز خود را بنویسید</h2>
+            </div>
+
+            <div class="field-row">
+              <label>
+                <span>نام و نام خانوادگی</span>
+                <input type="text" name="name" required />
+              </label>
+              <label>
+                <span>شماره تماس</span>
+                <input type="tel" name="phone" required inputmode="tel" />
+              </label>
+            </div>
+
+            <label>
+              <span>محصول یا خدمت مورد نیاز</span>
+              <select name="topic" required>
+                <option value="">انتخاب کنید</option>
+                <option value="آبخوری">آبخوری</option>
+                <option value="دانخوری">دانخوری</option>
+                <option value="سیستم انتقال دان">سیستم انتقال دان</option>
+                <option value="تجهیزات گرمایشی">تجهیزات گرمایشی</option>
+                <option value="استعلام کلی">استعلام کلی</option>
+              </select>
+            </label>
+
+            <label>
+              <span>توضیحات</span>
+              <textarea name="message" rows="5" required
+                placeholder="ظرفیت سالن، تعداد مورد نیاز یا زمان تقریبی خرید را بنویسید."></textarea>
+            </label>
+
+            <div class="admin-alert contact-form__message" id="contactFormMessage" aria-live="polite"></div>
+
+            <button class="btn btn--primary btn--large" type="submit">
+              <span>ارسال درخواست</span>
+              <i class="fa-solid fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <section class="map-placeholder" aria-label="موقعیت مجموعه">
+        <div class="container">
+          <div class="map-placeholder__box">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <div>
+              <span>موقعیت تقریبی</span>
+              <strong>قائمشهر، کمربندی شمالی، بهارنارنج ۴۵</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="footer">
+      <div class="container">
+        <div class="site-footer__main">
+          <div class="site-footer__brand">
+            <a class="brand brand--footer" href="index.html">
+              <span class="brand__mark" aria-hidden="true"><i class="fa-solid fa-feather-pointed"></i></span>
+              <span class="brand__text">
+                <strong>صنایع مرغداری تات پاکروح</strong>
+                <small>تأمین تجهیزات مدرن طیور</small>
+              </span>
+            </a>
+            <p>برای خرید مطمئن‌تر، قبل از ثبت سفارش با تیم فروش درباره نیاز سالن خود مشورت کنید.</p>
+          </div>
+
+          <div class="site-footer__col">
+            <h3>دسترسی سریع</h3>
+            <ul>
+              <li><a href="index.html">خانه</a></li>
+              <li><a href="products.html">محصولات</a></li>
+              <li><a href="services.html">خدمات</a></li>
+              <li><a href="about.html">درباره ما</a></li>
+            </ul>
+          </div>
+
+          <div class="site-footer__col">
+            <h3>محصولات</h3>
+            <ul>
+              <li><a href="products.html#productsCatalog">آبخوری</a></li>
+              <li><a href="products.html#productsCatalog">دانخوری</a></li>
+              <li><a href="products.html#productsCatalog">انتقال دان</a></li>
+              <li><a href="products.html#productsCatalog">گرمایشی</a></li>
+            </ul>
+          </div>
+
+          <div class="site-footer__col site-footer__contact">
+            <h3>تماس با ما</h3>
+            <a href="tel:01142090494"><i class="fa-solid fa-phone"></i>۰۱۱۴۲۰۹۰۴۹۴</a>
+            <a href="tel:09125152625"><i class="fa-solid fa-mobile-screen-button"></i>۰۹۱۲۵۱۵۲۶۲۵</a>
+            <p><i class="fa-solid fa-location-dot"></i>قائمشهر، کمربندی شمالی، بهارنارنج ۴۵</p>
+          </div>
+        </div>
+        <div class="site-footer__bottom">
+          <p>© تمامی حقوق این وب‌سایت متعلق به صنایع مرغداری تات پاکروح می‌باشد.</p>
+          <a href="#siteHeader" class="site-footer__top">بازگشت به بالا <i class="fa-solid fa-arrow-up"></i></a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+
+</html>

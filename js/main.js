@@ -17,6 +17,54 @@ function initNavbar() {
 
 function initMobileMenu() {
   const body = document.body;
+  const header = document.querySelector("#siteHeader");
+  const headerActions = document.querySelector(".header-actions");
+  const navLinks = document.querySelectorAll(".main-nav a");
+
+  if (header && headerActions && !document.querySelector(".menu-toggle")) {
+    const toggleButton = document.createElement("button");
+    toggleButton.className = "menu-toggle";
+    toggleButton.type = "button";
+    toggleButton.setAttribute("aria-label", "باز کردن منو");
+    toggleButton.setAttribute("aria-controls", "mobileMenu");
+    toggleButton.setAttribute("aria-expanded", "false");
+    toggleButton.innerHTML = "<span></span><span></span><span></span>";
+    headerActions.appendChild(toggleButton);
+  }
+
+  if (header && navLinks.length && !document.querySelector("#mobileMenu")) {
+    const overlay = document.createElement("div");
+    overlay.className = "menu-overlay";
+    overlay.dataset.menuClose = "";
+
+    const menu = document.createElement("aside");
+    menu.className = "mobile-menu";
+    menu.id = "mobileMenu";
+    menu.setAttribute("aria-label", "منوی موبایل");
+    menu.setAttribute("aria-hidden", "true");
+
+    const brand = document.querySelector(".brand")?.cloneNode(true);
+    const links = Array.from(navLinks)
+      .map((link) => `<a href="${link.getAttribute("href") || "#"}" data-menu-close>${link.textContent.trim()}</a>`)
+      .join("");
+
+    menu.innerHTML = `
+      <div class="mobile-menu__head">
+        ${brand ? brand.outerHTML : '<strong>صنایع مرغداری تات پاکروح</strong>'}
+        <button class="mobile-menu__close" type="button" aria-label="بستن منو" data-menu-close>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="mobile-menu__nav" aria-label="ناوبری موبایل">${links}</nav>
+      <a class="btn btn--primary mobile-menu__cta" href="tel:09125152625" data-menu-close>
+        <span>تماس مستقیم</span>
+        <i class="fa-solid fa-phone" aria-hidden="true"></i>
+      </a>
+    `;
+
+    document.querySelector(".page-shell")?.append(overlay, menu);
+  }
+
   const toggle = document.querySelector(".menu-toggle");
   const menu = document.querySelector("#mobileMenu");
   const closeTargets = document.querySelectorAll("[data-menu-close]");
@@ -231,18 +279,79 @@ function initButtonRipples() {
 }
 
 function initImageFallbacks() {
-  const categoryImages = document.querySelectorAll(".category-card__media img");
+  const images = document.querySelectorAll("img");
+  const fallback = "image/06F3B098-D47A-4B50-91FF-455BA45AA354.png";
 
-  categoryImages.forEach((image) => {
+  images.forEach((image) => {
     image.addEventListener(
       "error",
       () => {
-        const media = image.closest(".category-card__media");
+        const media = image.closest("[class*='image'], [class*='media'], [class*='banner']");
         if (media) media.classList.add("is-missing");
-        image.remove();
+
+        if (image.dataset.fallbackApplied === "true") {
+          image.remove();
+          return;
+        }
+
+        image.dataset.fallbackApplied = "true";
+        image.src = image.dataset.fallback || fallback;
       },
       { once: true }
     );
+  });
+}
+
+function initHeaderSearch() {
+  const searchButton = document.querySelector(".icon-btn[aria-label='جستجو']");
+  if (!searchButton) return;
+
+  searchButton.addEventListener("click", () => {
+    const searchInput = document.querySelector("#productSearch");
+
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    window.location.href = "products.html#productsCatalog";
+  });
+}
+
+function initContactForms() {
+  const form = document.querySelector("#contactRequestForm");
+  const message = document.querySelector("#contactFormMessage");
+
+  if (!form) return;
+
+  const showFormMessage = (text, isError = false) => {
+    if (!message) return;
+    message.textContent = text;
+    message.classList.add("is-visible");
+    message.classList.toggle("is-error", isError);
+  };
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const name = String(formData.get("name") || "").trim();
+    const phone = String(formData.get("phone") || "").trim();
+    const topic = String(formData.get("topic") || "").trim();
+    const requestMessage = String(formData.get("message") || "").trim();
+
+    if (!name || !phone || !topic || !requestMessage) {
+      showFormMessage("لطفاً همه فیلدهای فرم را کامل کنید.", true);
+      return;
+    }
+
+    const smsBody = encodeURIComponent(
+      `سلام، من ${name} هستم.\nشماره تماس: ${phone}\nموضوع: ${topic}\nتوضیحات: ${requestMessage}`
+    );
+
+    showFormMessage("درخواست آماده شد. برنامه پیامک دستگاه برای ارسال باز می‌شود.");
+    window.location.href = `sms:09125152625?&body=${smsBody}`;
   });
 }
 
@@ -255,4 +364,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initHeroParallax();
   initButtonRipples();
   initImageFallbacks();
+  initHeaderSearch();
+  initContactForms();
 });

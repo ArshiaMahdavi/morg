@@ -20,6 +20,12 @@ const {
 const router = express.Router();
 const projectRoot = path.join(__dirname, "..");
 const uploadDir = path.join(projectRoot, "uploads", "products");
+const allowedImageTypes = new Map([
+  ["image/jpeg", [".jpg", ".jpeg"]],
+  ["image/png", [".png"]],
+  ["image/webp", [".webp"]],
+  ["image/gif", [".gif"]],
+]);
 
 fs.mkdirSync(uploadDir, { recursive: true });
 
@@ -40,8 +46,11 @@ const upload = multer({
     fileSize: 3 * 1024 * 1024,
   },
   fileFilter: (req, file, callback) => {
-    if (!file.mimetype.startsWith("image/")) {
-      return callback(new Error("فقط فایل تصویر قابل آپلود است."));
+    const extension = path.extname(file.originalname).toLowerCase();
+    const allowedExtensions = allowedImageTypes.get(file.mimetype);
+
+    if (!allowedExtensions || !allowedExtensions.includes(extension)) {
+      return callback(new Error("فقط تصاویر JPG، PNG، WEBP یا GIF قابل آپلود هستند."));
     }
 
     return callback(null, true);
